@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
+import sklearn
 from sklearn.preprocessing import RobustScaler,MinMaxScaler,StandardScaler
 from sklearn.preprocessing import LabelEncoder,OneHotEncoder
 from sklearn.model_selection import train_test_split
@@ -13,6 +14,9 @@ from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score,roc_auc_score,f1_score,recall_score,precision_score,confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
+
+loan_pred = pd.read_csv(r'/Users/hasanzeynalov/Desktop/for_github/deployment/streamlit/Streamlit-Modelling-WebApp/loan_pred.csv')
+water_prob = pd.read_csv(r'/Users/hasanzeynalov/Desktop/for_github/deployment/streamlit/Streamlit-Modelling-WebApp/water_potability.csv')
 
 #-------------------------------------------------------------------- Page Title
 
@@ -36,16 +40,13 @@ with st.sidebar:
         menu_icon='cast'
     )
 
-loan_pred = pd.read_csv(r'/Users/hasanzeynalov/Desktop/dsa/python/case_study/loan_pred.csv')
-water_prob = pd.read_csv(r'/Users/hasanzeynalov/Desktop/dsa/python/case_study/week8_cs/water_potability.csv')
-
 #-------------------------------------------------------------------- page 1
 if selected == 'Homepage':
     st.title(selected)
     # 1. The first page (i.e. homepage) should be used to introduce ourselves with the data.
-    st.subheader('Deployment with streamlit')
+    st.subheader('Deployment with Streamlit:ML Application')
 
-    st.write('''we have 2 datasets named as a Loan prediction and Water potability.At this project,
+    st.write('''We have 2 datasets named as a Loan prediction and Water potability.At this project,
     we should train model.There are 3 pages:''')
 
     lst = ['Homepage', 'Exploraty Data Analysis', 'Modelling']
@@ -63,8 +64,6 @@ if selected == 'Homepage':
 #---------------------------------------------------------------------- page 2
 elif selected == 'EDA':
     st.title(selected)
-    loan_pred = pd.read_csv(r'/Users/hasanzeynalov/Desktop/dsa/python/case_study/loan_pred.csv')
-    water_prob = pd.read_csv(r'/Users/hasanzeynalov/Desktop/dsa/python/case_study/week8_cs/water_potability.csv')
 
     option = st.selectbox('Which data would you like to see now?', (
         'Loan Prediction', 'Water Potability'
@@ -242,15 +241,13 @@ else:
                                     (['Standart Scaler', 'Robust Scaler', 'Min Max Scaler']))
         if scalling_options == 'Standart Scaler':
             # standart_scaler
-            stan_scale = StandardScaler()
-            X = stan_scale.fit_transform(X)
+            scaler = StandardScaler()
         elif scalling_options == 'Robust Scaler':
             # min_max_scaler
-            min_max = MinMaxScaler()
-            X = min_max.fit_transform(X)
+            scaler = MinMaxScaler()
         else:
             robust = RobustScaler()
-            X = robust.fit_transform(X)
+        X = scaler.fit_transform(X)
 
 #-------------------------Train Test Splitting
 
@@ -280,14 +277,4 @@ else:
 
     st.subheader('Roc Auc Score and Confusion matrix to see how performs our model')
     st.button('Check them all')
-
-
-
-
-
-
-
-
-
-
 
