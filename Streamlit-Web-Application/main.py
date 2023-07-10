@@ -100,16 +100,19 @@ elif selected == 'EDA':
             st.title('Describe of Loan Prediction')
             describing = loan_pred.describe()
             st.write(describing)
+            #number of unique values
         elif option_eda == 'Number of unique values':
             st.title('Number of unique values for each features')
             num_unique = loan_pred.nunique()
             st.write(pd.DataFrame({'Number of unique values': num_unique}))
+            #checking unbalance
         elif option_eda == 'Inbalance Checking of Loan Status':
             st.title('Checking Inbalance')
             plt.figure(figsize=(16, 9))
             fig = plt.figure(figsize=(10, 4))
             sns.countplot(x="Loan_Status", data=loan_pred)
             st.pyplot(fig)
+
         st.subheader('There are some visualizations to get inside about the data.')
         vis_options = st.selectbox(
             'You can choose anyone you want!',
@@ -120,11 +123,13 @@ elif selected == 'EDA':
             fig, ax = plt.subplots()
             sns.heatmap(loan_pred.corr(), annot=True, ax=ax)
             st.write(fig)
+
         elif vis_options == '3d Line Plot':
             st.title('3d Line Plot')
             # line3d = loan_pred.query("Gender=='Male'")
             fig = px.line_3d(loan_pred, x="ApplicantIncome", y="LoanAmount", z="Loan_Amount_Term", color='Gender')
             st.write(fig)
+            
         elif vis_options == 'Viloin and Strip plot':
             st.title('Viloin and Strip Plot')
             co1, co2 = st.columns(2)
@@ -159,6 +164,13 @@ elif selected == 'EDA':
 #---------------------------------------------------------------------- page 3
 
 #-----Modelling
+# fill the null values
+    for i in loan_pred.columns:
+        if loan_pred[i].isnull().sum() != 0:
+            if loan_pred[i].dtype != 'object':
+                loan_pred[i] = loan_pred[i].fillna(loan_pred[i].mean())
+            elif loan_pred[i].dtype == 'object':
+                loan_pred[i] = loan_pred[i].fillna(method='ffill')
 
 else:
     st.title(selected)
